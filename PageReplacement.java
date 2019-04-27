@@ -93,14 +93,17 @@ c.weighty=1;
 add(obj1,c);
 
 c.gridwidth=3;
-c.gridy=11;
+c.gridy=7;
 c.weighty=1;
 c.weightx=1;
         OPT obj2=new OPT();
 add(obj2,c);
-
+        c.gridwidth=3;
+        c.gridy=11;
+        c.weighty=1;
+        c.weightx=1;
         LRU obj3=new LRU();
-
+add(obj3,c);
 
 
        compute.addActionListener(new ActionListener() {
@@ -113,6 +116,9 @@ add(obj2,c);
 
                 insertData(obj2.model,
                         obj2.obj2arr((int)combo.getSelectedItem(),reff), (t1.getText()).split(","));
+
+                insertData(obj3.model,
+                        obj3.obj3arr((int)combo.getSelectedItem(),reff), (t1.getText()).split(","));
             }
         });
     }
@@ -229,7 +235,7 @@ FIFO(){
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(500,500);
+        return new Dimension(400,400);
     }
 }
 
@@ -244,19 +250,19 @@ object here is obj2
  */
 class OPT extends JPanel {
     DefaultTableModel model;
-    JTable optTable;
+    JTable obj2table;
     static JLabel opt = new JLabel("Optimal ");
-    static JLabel PF = new JLabel("Page Faults=  ");
+    static JLabel pagefaults = new JLabel("Page Faults=  ");
     OPT(){
         JPanel labelPanel = new JPanel();
         labelPanel.setLayout(new BorderLayout());
         setLayout(new BorderLayout());
         labelPanel.add(opt,BorderLayout.WEST);
-        labelPanel.add(PF,BorderLayout.EAST);
+        labelPanel.add(pagefaults,BorderLayout.EAST);
         model = new DefaultTableModel();
-        optTable = new JTable(model);
-        optTable.getTableHeader().setReorderingAllowed(false);
-        JScrollPane scrollPane = new JScrollPane(optTable);
+        obj2table = new JTable(model);
+        obj2table.getTableHeader().setReorderingAllowed(false);
+        JScrollPane scrollPane = new JScrollPane(obj2table);
         add(labelPanel,BorderLayout.NORTH);
         add(scrollPane,BorderLayout.CENTER);
     }
@@ -288,7 +294,7 @@ class OPT extends JPanel {
                 minIndex = j;
             }
         }
-        System.out.println(minIndex);
+
         return minIndex;
     }
 
@@ -298,12 +304,12 @@ class OPT extends JPanel {
         for (int i = 0 ; i < frame.length; i++) {
             for (int j = 0; j < frame[0].length; j++) {
                 if (frame[i][j] == Integer.MAX_VALUE){
-                    System.out.print(-1+" ");
+
                     continue;
                 }
-                System.out.print(frame[i][j]+"  ");
+
             }
-            System.out.println("");
+
         }
     }
 
@@ -331,14 +337,115 @@ class OPT extends JPanel {
             }
         }
 
-        PF.setText("Page Fault: "+count);
+        pagefaults.setText("Page Fault: "+count);
         return f;
     }
     public Dimension getPreferredSize() {
-        return new Dimension(500,500);
+        return new Dimension(400,400);
     }
 
 }
-class LRU{
+class LRU extends JPanel {
+    DefaultTableModel model;
+    JTable obj3table;
+    JLabel lru = new JLabel("Least Recently Used ");
+    static JLabel pagefaults = new JLabel("Page Faults=  ");
+    LRU(){
+        JPanel labelPanel = new JPanel();
+        setLayout(new BorderLayout());
+        labelPanel.setLayout(new BorderLayout());
+        labelPanel.add(lru,BorderLayout.WEST);
+        labelPanel.add(pagefaults,BorderLayout.EAST);
+
+        model = new DefaultTableModel();
+        obj3table = new JTable(model);
+        obj3table.getTableHeader().setReorderingAllowed(false);
+        JScrollPane scrollPane = new JScrollPane(obj3table);
+        add(labelPanel,BorderLayout.NORTH);
+        add(scrollPane,BorderLayout.CENTER);
+    }
+
+    int findLeastRecent(int [][]array, int col, int [] refString){
+        int []lru = new int[array.length];
+
+        for (int i = 0 ; i < lru.length; i++){
+            lru[i] = Integer.MIN_VALUE;
+        }
+
+        for (int j = 0 ; j < array.length ; j++) {
+            if (array[j][col] == Integer.MAX_VALUE) {
+                return j;
+            }
+        }
+
+        for (int k = 0 ; k < array.length ; k++) {
+            for (int i = 0; i < col; i++) {
+                if (refString[i] == array[k][col]){
+                    lru[k] = i ;
+                }
+            }
+        }
+
+        int minIndex = 0;
+
+        for (int i = 0 ; i < lru.length ; i++){
+            if (lru[minIndex] > lru[i]){
+                minIndex = i;
+            }
+        }
+        for (int i = 0 ; i < lru.length; i++){
+
+        }
+
+
+        return minIndex;
+    }
+
+    void printer(int [][] frame){
+        System.out.println("LRU");
+
+        for (int i = 0 ; i < frame.length; i++) {
+            for (int j = 0; j < frame[0].length; j++) {
+                if (frame[i][j] == Integer.MAX_VALUE){
+
+                    continue;
+                }
+
+            }
+
+
+        }
+    }
+
+    public String[][] obj3arr(int frameCount, int []refString){
+        int frame[][] = new int[frameCount][refString.length];
+        FIFO.initialise(frame);
+        int count = 0;
+        for( int i = 0 ; i < refString.length ; i++){
+            if (!FIFO.chckE(frame, i, refString[i])){
+                int replace = findLeastRecent(frame, i , refString);
+                FIFO.initialiseRow(frame[replace], refString[i], i);
+                count++;
+            }
+        }
+
+        printer(frame);
+        String [][]f = new String[frameCount][refString.length];
+        for (int i = 0 ; i < frameCount; i++){
+            for (int j = 0 ; j < refString.length ; j++){
+                if (frame[i][j] == Integer.MAX_VALUE){
+                    f[i][j] = "Null";
+                    continue;
+                }
+                f[i][j] = Integer.toString(frame[i][j]);
+            }
+        }
+
+        pagefaults.setText("Page Fault: "+count);
+        return f;
+    }
+    public Dimension getPreferredSize() {
+        return new Dimension(400,400);
+    }
 
 }
