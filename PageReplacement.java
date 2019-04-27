@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 /*
-obj1arr=getFifoArray
+@author Anish R(1710110053)
 
  */
 public class PageReplacement {
@@ -49,14 +49,14 @@ class inputWindow extends JFrame {
         c.weightx = .5;
         p.add(frames, c);
 
-        Integer[] frameoptions = {3, 4, 5, 6, 7};
-        JComboBox<Integer> combo = new JComboBox<Integer>(frameoptions);
+        Integer[] frameOPTions = {3, 4, 5, 6, 7};
+        JComboBox<Integer> combo = new JComboBox<Integer>(frameOPTions);
         c.gridx++;
         c.weightx = .5;
         p.add(combo, c);
 
 
-        JLabel refStringlabel = new JLabel(" Enter The Reference String");
+        JLabel refStringlabel = new JLabel(" Reference String");
         c.weightx = .5;
         c.gridy++;
         c.gridx--;
@@ -203,34 +203,38 @@ FIFO(){
 
 
 
-    public static String[][] obj1arr(int noOfFramest, int []refString){
-        int frame[][] = new int[noOfFramest][refString.length];
+    public static String[][] obj1arr(int noOfFramest, int []refferalString){
+        int frame[][] = new int[noOfFramest][refferalString.length];
         init(frame);
         int count = 0;
         boolean flag[] = new boolean[noOfFramest];
 
-        for (int i = 0 ; i < refString.length ; i++){
-            if (!chckE(frame, i, refString[i])){
-                frame[count%noOfFramest][i] = refString[i];
+        for (int i = 0 ; i < refferalString.length ; i++){
+            if (!chckE(frame, i, refferalString[i])){
+                frame[count%noOfFramest][i] =refferalString[i];
                 flag[count%noOfFramest] = true;
-                initRow(frame[count%noOfFramest],refString[i],i);
+                initRow(frame[count%noOfFramest],refferalString[i],i);
                 count++;
             }
         }
+        String [][]ff = new String[noOfFramest][refferalString.length];
 
-        String [][]f = new String[noOfFramest][refString.length];
-        for (int i = 0 ; i < noOfFramest; i++){
-            for (int j = 0 ; j < refString.length ; j++){
-                if (frame[i][j] == Integer.MAX_VALUE){
-                    f[i][j] = "Null";
+
+        for (int k = 0 ; k < noOfFramest; k++){
+            int a=10;
+            for (int j = 0 ; j < refferalString.length ; j++){
+                if (frame[k][j] == Integer.MAX_VALUE){
+                    int flag11=0;
+                    ff[k][j] = "";
+                    System.out.println("inside fifo "+count);
                     continue;
                 }
-                f[i][j] = Integer.toString(frame[i][j]);
+                ff[k][j] = Integer.toString(frame[k][j]);
             }
         }
 
         pagefaults.setText("Page Faults= "+count);
-        return f;
+        return ff;
     }
 
     @Override
@@ -243,21 +247,22 @@ FIFO(){
 
 
 /*
-Optimal algorithm defined and values are modified by model
+OPTimal algorithm defined and values are modified by model
 and then entered into the Jtable table 2
 object here is obj2
+The page that will be used furthest will be replaced in this algorithm
 
  */
 class OPT extends JPanel {
     DefaultTableModel model;
     JTable obj2table;
-    static JLabel opt = new JLabel("Optimal ");
+    static JLabel obj2label = new JLabel("Optimal ");
     static JLabel pagefaults = new JLabel("Page Faults=  ");
     OPT(){
         JPanel labelPanel = new JPanel();
         labelPanel.setLayout(new BorderLayout());
         setLayout(new BorderLayout());
-        labelPanel.add(opt,BorderLayout.WEST);
+        labelPanel.add(obj2label,BorderLayout.WEST);
         labelPanel.add(pagefaults,BorderLayout.EAST);
         model = new DefaultTableModel();
         obj2table = new JTable(model);
@@ -267,51 +272,48 @@ class OPT extends JPanel {
         add(scrollPane,BorderLayout.CENTER);
     }
 
-    public int findOptimal(int []refString, int [][] array, int i) {
+    public int findOPTimal(int []refString, int [][] array, int i) {
         for (int j = 0 ; j < array.length ; j++){
             if (array[j][i] == Integer.MAX_VALUE) {
                 return j;
             }
         }
 
-        int [] opt = new int[array.length];
-        for (int k = 0 ; k < opt.length ; k++){
-            opt[k] = refString.length;
+        int [] OPT = new int[array.length];
+        for (int k = 0 ; k < OPT.length ; k++){
+            OPT[k] = refString.length;
         }
         for (int k = 0 ; k < array.length ; k++) {
             for (int j = i + 1; j < refString.length; j++) {
                 if (array[k][i] == refString[j]){
-                    opt[k] = j;
+                    OPT[k] = j;
                     break;
                 }
             }
         }
 
-        int minIndex = 0;
+        int minimumIndexing = 0;
 
-        for (int j = 0 ; j < opt.length; j++){
-            if (opt[minIndex]<opt[j]){
-                minIndex = j;
+        for (int j = 0 ; j < OPT.length; j++){
+            if (OPT[minimumIndexing]<OPT[j]){
+                minimumIndexing = j;
             }
         }
 
-        return minIndex;
+        return minimumIndexing;
     }
 
-    void printer(int [][] frame){
-        System.out.println("OPT");
 
-        for (int i = 0 ; i < frame.length; i++) {
-            for (int j = 0; j < frame[0].length; j++) {
-                if (frame[i][j] == Integer.MAX_VALUE){
 
-                    continue;
-                }
-
-            }
-
-        }
-    }
+//                if (frame[i][j] == Integer.MAX_VALUE){
+//
+//                    continue;
+//                }
+//
+//            }
+//
+//        }
+//    }
 
     public String[][] obj2arr(int noOfFramest, int []refString){
         int frame[][] = new int[noOfFramest][refString.length];
@@ -320,19 +322,22 @@ class OPT extends JPanel {
         int count = 0;
         for (int i = 0 ; i < refString.length ; i ++){
             if (!FIFO.chckE(frame, i, refString[i])){
-                int replace = findOptimal(refString, frame, i);
+                int replace = findOPTimal(refString, frame, i);
                 FIFO.initRow(frame[replace], refString[i], i);
                 count++;
             }
         }
-        printer(frame);
+        //display(frame);
         String [][]f = new String[noOfFramest][refString.length];
 
         for (int i = 0 ; i < noOfFramest; i++){
 
             for (int j = 0 ; j < refString.length ; j++){
+                int flag22=0;
                 if (frame[i][j] == Integer.MAX_VALUE){
-                    f[i][j] = "Null";
+                    f[i][j] = "";
+                    System.out.println("inside optimal "+count);
+                    int flag23=1;
                     continue;
                 }
                 f[i][j] = Integer.toString(frame[i][j]);
@@ -347,16 +352,19 @@ class OPT extends JPanel {
     }
 
 }
+/*
+Least recently used page will be replaced
+ */
 class LRU extends JPanel {
     DefaultTableModel model;
     JTable obj3table;
-    JLabel lru = new JLabel("Least Recently Used ");
+    JLabel obj3label = new JLabel("Least Recently Used ");
     static JLabel pagefaults = new JLabel("Page Faults=  ");
     LRU(){
         JPanel labelPanel = new JPanel();
         setLayout(new BorderLayout());
         labelPanel.setLayout(new BorderLayout());
-        labelPanel.add(lru,BorderLayout.WEST);
+        labelPanel.add(obj3label,BorderLayout.WEST);
         labelPanel.add(pagefaults,BorderLayout.EAST);
 
         model = new DefaultTableModel();
@@ -368,10 +376,10 @@ class LRU extends JPanel {
     }
 
     int findLeastRecent(int [][]array, int col, int [] refString){
-        int []lru = new int[array.length];
+        int []leastused = new int[array.length];
 
-        for (int i = 0 ; i < lru.length; i++){
-            lru[i] = Integer.MIN_VALUE;
+        for (int i = 0 ; i < leastused.length; i++){
+            leastused[i] = Integer.MIN_VALUE;
         }
 
         for (int j = 0 ; j < array.length ; j++) {
@@ -383,63 +391,53 @@ class LRU extends JPanel {
         for (int k = 0 ; k < array.length ; k++) {
             for (int i = 0; i < col; i++) {
                 if (refString[i] == array[k][col]){
-                    lru[k] = i ;
+                    leastused[k] = i ;
                 }
             }
         }
 
-        int minIndex = 0;
+        int minimumIndexing = 0;
 
-        for (int i = 0 ; i < lru.length ; i++){
-            if (lru[minIndex] > lru[i]){
-                minIndex = i;
+        for (int i = 0 ; i < leastused.length ; i++){
+            if (leastused[minimumIndexing] > leastused[i]){
+                minimumIndexing = i;
             }
         }
-        for (int i = 0 ; i < lru.length; i++){
+        for (int i = 0 ; i < leastused.length; i++){
 
         }
 
 
-        return minIndex;
+        return minimumIndexing;
     }
 
-    void printer(int [][] frame){
-        System.out.println("LRU");
-
-        for (int i = 0 ; i < frame.length; i++) {
-            for (int j = 0; j < frame[0].length; j++) {
-                if (frame[i][j] == Integer.MAX_VALUE){
-
-                    continue;
-                }
-
-            }
 
 
-        }
-    }
 
     public String[][] obj3arr(int noOfFramest, int []refString){
-        int frame[][] = new int[noOfFramest][refString.length];
-        FIFO.init(frame);
+        int frames[][] = new int[noOfFramest][refString.length];
+        FIFO.init(frames);
         int count = 0;
         for( int i = 0 ; i < refString.length ; i++){
-            if (!FIFO.chckE(frame, i, refString[i])){
-                int replace = findLeastRecent(frame, i , refString);
-                FIFO.initRow(frame[replace], refString[i], i);
+            if (!FIFO.chckE(frames, i, refString[i])){
+                int replace = findLeastRecent(frames, i , refString);
+                System.out.println("in lru");
+                FIFO.initRow(frames[replace], refString[i], i);
                 count++;
             }
         }
 
-        printer(frame);
+
         String [][]f = new String[noOfFramest][refString.length];
         for (int i = 0 ; i < noOfFramest; i++){
             for (int j = 0 ; j < refString.length ; j++){
-                if (frame[i][j] == Integer.MAX_VALUE){
-                    f[i][j] = "Null";
+                if (frames[i][j] == Integer.MAX_VALUE){
+                    int flg24=0;
+                    System.out.println(" indside lru"+count);
+                    f[i][j] = "";
                     continue;
                 }
-                f[i][j] = Integer.toString(frame[i][j]);
+                f[i][j] = Integer.toString(frames[i][j]);
             }
         }
 
@@ -451,3 +449,16 @@ class LRU extends JPanel {
     }
 
 }
+
+
+//      for (int i = 0 ; i < frame.length; i++) {
+//            for (int j = 0; j < frame[0].length; j++) {
+//                if (frame[i][j] == Integer.MAX_VALUE){
+//
+//                    continue;
+//                }
+//
+//            }
+//
+//
+//        }
