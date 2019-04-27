@@ -92,10 +92,14 @@ c.weighty=1;
         FIFO obj1=new FIFO();
 add(obj1,c);
 
-        LRU obj2=new LRU();
+c.gridwidth=3;
+c.gridy=11;
+c.weighty=1;
+c.weightx=1;
+        OPT obj2=new OPT();
+add(obj2,c);
 
-
-        OPT obj3=new OPT();
+        LRU obj3=new LRU();
 
 
 
@@ -105,7 +109,10 @@ add(obj1,c);
 //insertData(obj1.model,obj1.obj1arr((int)combo.getSele));
                 int[] reff=refStringVals(t1.getText().toString());
                 insertData(obj1.model,
-                        FIFO.obj1arr((int)combo.getSelectedItem(),reff), (t1.getText()).split(","));
+                        obj1.obj1arr((int)combo.getSelectedItem(),reff), (t1.getText()).split(","));
+
+                insertData(obj2.model,
+                        obj2.obj2arr((int)combo.getSelectedItem(),reff), (t1.getText()).split(","));
             }
         });
     }
