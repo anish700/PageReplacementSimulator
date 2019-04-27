@@ -188,14 +188,14 @@ FIFO(){
         return false;
     }
 
-    public static void initialise(int [][] array){
+    public static void init(int [][] array){
         for (int i = 0 ; i < array.length; i++){
             for(int j = 0 ; j < array[0].length; j++)
                 array[i][j] = Integer.MAX_VALUE;
         }
     }
 
-    public static void initialiseRow(int [] array, int num, int i){
+    public static void initRow(int [] array, int num, int i){
         for(int j = i ; j < array.length; j++)
             array[j] = num;
     }
@@ -203,23 +203,23 @@ FIFO(){
 
 
 
-    public static String[][] obj1arr(int frameCount, int []refString){
-        int frame[][] = new int[frameCount][refString.length];
-        initialise(frame);
+    public static String[][] obj1arr(int noOfFramest, int []refString){
+        int frame[][] = new int[noOfFramest][refString.length];
+        init(frame);
         int count = 0;
-        boolean flag[] = new boolean[frameCount];
+        boolean flag[] = new boolean[noOfFramest];
 
         for (int i = 0 ; i < refString.length ; i++){
             if (!chckE(frame, i, refString[i])){
-                frame[count%frameCount][i] = refString[i];
-                flag[count%frameCount] = true;
-                initialiseRow(frame[count%frameCount],refString[i],i);
+                frame[count%noOfFramest][i] = refString[i];
+                flag[count%noOfFramest] = true;
+                initRow(frame[count%noOfFramest],refString[i],i);
                 count++;
             }
         }
 
-        String [][]f = new String[frameCount][refString.length];
-        for (int i = 0 ; i < frameCount; i++){
+        String [][]f = new String[noOfFramest][refString.length];
+        for (int i = 0 ; i < noOfFramest; i++){
             for (int j = 0 ; j < refString.length ; j++){
                 if (frame[i][j] == Integer.MAX_VALUE){
                     f[i][j] = "Null";
@@ -313,21 +313,23 @@ class OPT extends JPanel {
         }
     }
 
-    public String[][] obj2arr(int frameCount, int []refString){
-        int frame[][] = new int[frameCount][refString.length];
-        FIFO.initialise(frame);
-        boolean flag[] = new boolean[frameCount];
+    public String[][] obj2arr(int noOfFramest, int []refString){
+        int frame[][] = new int[noOfFramest][refString.length];
+        FIFO.init(frame);
+        boolean flag[] = new boolean[noOfFramest];
         int count = 0;
         for (int i = 0 ; i < refString.length ; i ++){
             if (!FIFO.chckE(frame, i, refString[i])){
                 int replace = findOptimal(refString, frame, i);
-                FIFO.initialiseRow(frame[replace], refString[i], i);
+                FIFO.initRow(frame[replace], refString[i], i);
                 count++;
             }
         }
         printer(frame);
-        String [][]f = new String[frameCount][refString.length];
-        for (int i = 0 ; i < frameCount; i++){
+        String [][]f = new String[noOfFramest][refString.length];
+
+        for (int i = 0 ; i < noOfFramest; i++){
+
             for (int j = 0 ; j < refString.length ; j++){
                 if (frame[i][j] == Integer.MAX_VALUE){
                     f[i][j] = "Null";
@@ -417,21 +419,21 @@ class LRU extends JPanel {
         }
     }
 
-    public String[][] obj3arr(int frameCount, int []refString){
-        int frame[][] = new int[frameCount][refString.length];
-        FIFO.initialise(frame);
+    public String[][] obj3arr(int noOfFramest, int []refString){
+        int frame[][] = new int[noOfFramest][refString.length];
+        FIFO.init(frame);
         int count = 0;
         for( int i = 0 ; i < refString.length ; i++){
             if (!FIFO.chckE(frame, i, refString[i])){
                 int replace = findLeastRecent(frame, i , refString);
-                FIFO.initialiseRow(frame[replace], refString[i], i);
+                FIFO.initRow(frame[replace], refString[i], i);
                 count++;
             }
         }
 
         printer(frame);
-        String [][]f = new String[frameCount][refString.length];
-        for (int i = 0 ; i < frameCount; i++){
+        String [][]f = new String[noOfFramest][refString.length];
+        for (int i = 0 ; i < noOfFramest; i++){
             for (int j = 0 ; j < refString.length ; j++){
                 if (frame[i][j] == Integer.MAX_VALUE){
                     f[i][j] = "Null";
